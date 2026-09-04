@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>7-Segment Digital Clock</title>
-    <!-- ตั้งค่าให้แสดงผลเต็มจอแบบแอปบน iPad mini 1 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Clock">
     
-    <!-- ดึงฟอนต์สไตล์ 7-Segment มาใช้งานจาก Google Fonts -->
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
-
     <style>
-        /* ตั้งค่าพื้นหลังสีดำสนิทและจัดกึ่งกลางหน้าจอ */
+        /* บังคับโหลดฟอนต์ด้วยรูปแบบ TTF เพื่อให้ iOS 9 รองรับแน่นอน */
+        @font-face {
+            font-family: 'Orbitron-iOS9';
+            src: url('https://gstatic.com') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -23,42 +24,40 @@
         }
         body {
             background-color: #000000;
-            color: #d1d5db; /* สีขาวเทาหลัก (กึ่งสว่าง) */
-            font-family: 'Orbitron', sans-serif;
+            color: #d1d5db; /* สีขาวเทาหลัก */
+            font-family: 'Orbitron-iOS9', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             overflow: hidden;
-            /* ป้องกันการกดค้างแล้วขึ้นเมนูเลือกข้อความบน iPad */
             -webkit-user-select: none;
             user-select: none;
         }
 
-        /* กล่องครอบตัวเลขนาฬิกา */
         .clock-container {
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: #050505;
-            padding: 40px 60px;
+            padding: 30px 40px;
             border-radius: 20px;
-            border: 2px solid #1f2937; /* ขอบสีเทาเข้มจางๆ */
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.03);
+            border: 2px solid #1f2937;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.03);
+            width: 90vw; /* ล็อคความกว้างให้พอดีกับจอ iPad */
         }
 
-        /* สไตล์ตัวเลขดิจิตอล */
         .time-display {
-            font-size: 11vw; /* ปรับขนาดอัตโนมัติตามหน้าจอ iPad */
-            letter-spacing: 5px;
-            text-shadow: 0 0 20px rgba(209, 213, 219, 0.4); /* เอฟเฟกต์ไฟเรืองแสงสีขาวเทา */
+            font-size: 14vw; /* เพิ่มขนาดตัวเลขให้เต็มหน้าจอ iPad mini มากขึ้น */
+            letter-spacing: 2px;
+            text-shadow: 0 0 25px rgba(209, 213, 219, 0.5); /* เอฟเฟกต์เรืองแสง */
             font-weight: 700;
+            white-space: nowrap;
         }
 
-        /* สไตล์จุดสองจุด (:) กระพริบได้ */
         .colon {
             animation: blink 1s infinite;
-            padding: 0 10px;
+            padding: 0 5px;
         }
 
         @keyframes blink {
@@ -70,38 +69,30 @@
 <body>
 
     <div class="clock-container">
-        <!-- ส่วนแสดงผลเวลา -->
         <div class="time-display">
             <span id="hours">00</span><span class="colon">:</span><span id="minutes">00</span><span class="colon">:</span><span id="seconds">00</span>
         </div>
     </div>
 
     <script>
-    function updateClock() {
-        var now = new Date();
-        
-        // ดึงค่าเวลาออกมาเป็นตัวเลข
-        var h = now.getHours();
-        var m = now.getMinutes();
-        var s = now.getSeconds();
-        
-        // ใช้เงื่อนไขเช็คว่าถ้าต่ำกว่า 10 ให้เติม '0' ข้างหน้า (วิธีนี้รองรับ iOS 9 แน่นอน)
-        var hours   = (h < 10) ? '0' + h : h;
-        var minutes = (m < 10) ? '0' + m : m;
-        var seconds = (s < 10) ? '0' + s : s;
-        
-        // นำค่าไปแสดงผลใน HTML
-        document.getElementById('hours').innerText = hours;
-        document.getElementById('minutes').innerText = minutes;
-        document.getElementById('seconds').innerText = seconds;
-    }
+        function updateClock() {
+            var now = new Date();
+            
+            var h = now.getHours();
+            var m = now.getMinutes();
+            var s = now.getSeconds();
+            
+            var hours   = (h < 10) ? '0' + h : h;
+            var minutes = (m < 10) ? '0' + m : m;
+            var seconds = (s < 10) ? '0' + s : s;
+            
+            document.getElementById('hours').innerText = hours;
+            document.getElementById('minutes').innerText = minutes;
+            document.getElementById('seconds').innerText = seconds;
+        }
 
-    // สั่งให้ระบบอัปเดตเวลาทุกๆ 1 วินาที
-    setInterval(updateClock, 1000);
-
-    // เรียกทำงานทันทีที่เปิดหน้าเว็บ
-    updateClock();
-</script>
-
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
 </body>
 </html>
