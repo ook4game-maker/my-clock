@@ -9,7 +9,6 @@
     <meta name="apple-mobile-web-app-title" content="Clock">
     
     <style>
-        /* ตั้งค่าหน้าจอและโครงสร้างหลัก */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             background-color: #000000;
@@ -33,10 +32,8 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
         }
 
-        /* โครงสร้างกลุ่มตัวเลข */
         .digit-group { display: flex; }
 
-        /* สไตล์จุดสองจุด (:) ของนาฬิกาดิจิตอล */
         .colon-container {
             display: flex;
             flex-direction: column;
@@ -49,11 +46,10 @@
         .colon-dot {
             width: 8px;
             height: 8px;
-            background-color: #d1d5db; /* สีขาวเทา */
+            background-color: #d1d5db;
             box-shadow: 0 0 10px rgba(209, 213, 219, 0.6);
         }
 
-        /* โครงสร้างตัวเลข 7-Segment สี่เหลี่ยม */
         .digit {
             position: relative;
             width: 60px;
@@ -61,21 +57,19 @@
             margin: 0 5px;
         }
 
-        /* สไตล์ของชิ้นส่วนไฟแต่ละแท่ง (Segments) */
         .seg {
             position: absolute;
-            background-color: #1c1917; /* สีเทาเข้มมาก (จำลองหลอดไฟที่ดับอยู่) */
+            background-color: #1c1917; /* สีหลอดไฟตอนดับ */
             border-radius: 1px;
-            transition: background-color 0.1s;
         }
 
-        /* บังคับเปิดไฟสว่างเป็นสีขาวเทาเรืองแสง */
-        .digit.on .seg.on {
-            background-color: #e5e7eb; 
+        /* เมื่อชิ้นส่วนไฟเปิดทำงาน */
+        .digit .seg.on {
+            background-color: #e5e7eb; /* สีขาวเทาดิจิตอล */
             box-shadow: 0 0 12px rgba(229, 231, 235, 0.7);
         }
 
-        /* พิกัดการจัดวางตำแหน่งแท่งไฟทั้ง 7 ชิ้น */
+        /* พิกัดการวางท่อนเหลี่ยมทั้ง 7 ชิ้น */
         .seg-a { top: 0; left: 6px; width: 48px; height: 8px; }
         .seg-b { top: 6px; right: 0; width: 8px; height: 42px; }
         .seg-c { bottom: 6px; right: 0; width: 8px; height: 42px; }
@@ -89,7 +83,7 @@
             50% { opacity: 0.15; }
         }
 
-        /* ขยายขนาดตามหน้าจอ iPad mini */
+        /* ขยายขนาดให้แสดงผลใหญ่เต็มจอ iPad mini 1 */
         @media (min-width: 700px) {
             .digit { width: 90px; height: 160px; margin: 0 8px; }
             .seg-a { height: 12px; width: 66px; left: 12px; }
@@ -107,7 +101,6 @@
 <body>
 
     <div class="clock-container">
-        <!-- ชิ้นส่วนแสดงตัวเลขนาฬิกา -->
         <div class="digit-group" id="g-hours"></div>
         <div class="colon-container"><div class="colon-dot"></div><div class="colon-dot"></div></div>
         <div class="digit-group" id="g-minutes"></div>
@@ -116,26 +109,25 @@
     </div>
 
     <script>
-        // แผนผังการเปิดไฟ (0 = ดับ, 1 = เปิด) ของแต่ละตัวเลข [a, b, c, d, e, f, g]
+        // แก้ไขแผนผังการเปิดไฟ 7-segment ให้สมบูรณ์และถูกต้องแล้วครับ
         var mapping = {
-            '0':,
-            '1':,
-            '2':,
-            '3':,
-            '4':,
-            '5':,
-            '6':,
-            '7':,
-            '8':,
+            '0': [1, 1, 1, 1, 1, 1, 0],
+            '1': [0, 1, 1, 0, 0, 0, 0],
+            '2': [1, 1, 0, 1, 1, 0, 1],
+            '3': [1, 1, 1, 1, 0, 0, 1],
+            '4': [0, 1, 1, 0, 0, 1, 1],
+            '5': [1, 0, 1, 1, 0, 1, 1],
+            '6': [1, 0, 1, 1, 1, 1, 1],
+            '7': [1, 1, 1, 0, 0, 0, 0],
+            '8': [1, 1, 1, 1, 1, 1, 1],
             '9': [1, 1, 1, 1, 0, 1, 1]
         };
 
-        // ฟังก์ชันสร้างโครงสร้าง HTML ของตัวเลขดิจิตอล 7 แท่ง
         function createDigitElement(containerId) {
             var container = document.getElementById(containerId);
             for (var i = 0; i < 2; i++) {
                 var digit = document.createElement('div');
-                digit.className = 'digit on';
+                digit.className = 'digit';
                 var segments = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
                 for (var j = 0; j < segments.length; j++) {
                     var seg = document.createElement('div');
@@ -146,7 +138,6 @@
             }
         }
 
-        // ฟังก์ชันควบคุมการสั่งเปิด-ปิดไฟตามตัวเลขจริง
         function setDigitValue(groupContainer, valueString) {
             var digits = groupContainer.getElementsByClassName('digit');
             for (var i = 0; i < 2; i++) {
@@ -154,16 +145,16 @@
                 var segmentsMap = mapping[num];
                 var segElements = digits[i].getElementsByClassName('seg');
                 for (var j = 0; j < 7; j++) {
+                    var segName = ['a','b','c','d','e','f','g'][j];
                     if (segmentsMap[j] === 1) {
-                        segElements[j].className = 'seg seg-' + ['a','b','c','d','e','f','g'][j] + ' on';
+                        segElements[j].className = 'seg seg-' + segName + ' on';
                     } else {
-                        segElements[j].className = 'seg seg-' + ['a','b','c','d','e','f','g'][j];
+                        segElements[j].className = 'seg seg-' + segName;
                     }
                 }
             }
         }
 
-        // เตรียมสร้างกล่องตัวเลขไว้ล่วงหน้า
         createDigitElement('g-hours');
         createDigitElement('g-minutes');
         createDigitElement('g-seconds');
