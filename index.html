@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>7-Segment Digital Clock</title>
+    <!-- ตั้งค่าให้แสดงผลเต็มจอแบบแอปบน iPad mini 1 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Clock">
+    
+    <!-- ดึงฟอนต์สไตล์ 7-Segment มาใช้งานจาก Google Fonts -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ตั้งค่าพื้นหลังสีดำสนิทและจัดกึ่งกลางหน้าจอ */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #000000;
+            color: #d1d5db; /* สีขาวเทาหลัก (กึ่งสว่าง) */
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            /* ป้องกันการกดค้างแล้วขึ้นเมนูเลือกข้อความบน iPad */
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* กล่องครอบตัวเลขนาฬิกา */
+        .clock-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #050505;
+            padding: 40px 60px;
+            border-radius: 20px;
+            border: 2px solid #1f2937; /* ขอบสีเทาเข้มจางๆ */
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.03);
+        }
+
+        /* สไตล์ตัวเลขดิจิตอล */
+        .time-display {
+            font-size: 11vw; /* ปรับขนาดอัตโนมัติตามหน้าจอ iPad */
+            letter-spacing: 5px;
+            text-shadow: 0 0 20px rgba(209, 213, 219, 0.4); /* เอฟเฟกต์ไฟเรืองแสงสีขาวเทา */
+            font-weight: 700;
+        }
+
+        /* สไตล์จุดสองจุด (:) กระพริบได้ */
+        .colon {
+            animation: blink 1s infinite;
+            padding: 0 10px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="clock-container">
+        <!-- ส่วนแสดงผลเวลา -->
+        <div class="time-display">
+            <span id="hours">00</span><span class="colon">:</span><span id="minutes">00</span><span class="colon">:</span><span id="seconds">00</span>
+        </div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            
+            // ดึงค่า เวลา และแปลงเป็นเลข 2 หลักเสมอ (เช่น 9 เป็น 09)
+            let hours = String(now.getHours()).padStart(2, '0');
+            let minutes = String(now.getMinutes()).padStart(2, '0');
+            let seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            // นำค่าไปแสดงผลใน HTML
+            document.getElementById('hours').innerText = hours;
+            document.getElementById('minutes').innerText = minutes;
+            document.getElementById('seconds').innerText = seconds;
+        }
+
+        // สั่งให้ระบบอัปเดตเวลาทุกๆ 1 วินาที (1000 มิลลิวินาที)
+        setInterval(updateClock, 1000);
+
+        // เรียกทำงานทันทีที่เปิดหน้าเว็บ ไม่ต้องรอให้ครบ 1 วินาทีแรก
+        updateClock();
+    </script>
+</body>
+</html>
