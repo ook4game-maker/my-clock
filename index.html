@@ -77,25 +77,31 @@
     </div>
 
     <script>
-        function updateClock() {
-            const now = new Date();
-            
-            // ดึงค่า เวลา และแปลงเป็นเลข 2 หลักเสมอ (เช่น 9 เป็น 09)
-            let hours = String(now.getHours()).padStart(2, '0');
-            let minutes = String(now.getMinutes()).padStart(2, '0');
-            let seconds = String(now.getSeconds()).padStart(2, '0');
-            
-            // นำค่าไปแสดงผลใน HTML
-            document.getElementById('hours').innerText = hours;
-            document.getElementById('minutes').innerText = minutes;
-            document.getElementById('seconds').innerText = seconds;
-        }
+    function updateClock() {
+        var now = new Date();
+        
+        // ดึงค่าเวลาออกมาเป็นตัวเลข
+        var h = now.getHours();
+        var m = now.getMinutes();
+        var s = now.getSeconds();
+        
+        // ใช้เงื่อนไขเช็คว่าถ้าต่ำกว่า 10 ให้เติม '0' ข้างหน้า (วิธีนี้รองรับ iOS 9 แน่นอน)
+        var hours   = (h < 10) ? '0' + h : h;
+        var minutes = (m < 10) ? '0' + m : m;
+        var seconds = (s < 10) ? '0' + s : s;
+        
+        // นำค่าไปแสดงผลใน HTML
+        document.getElementById('hours').innerText = hours;
+        document.getElementById('minutes').innerText = minutes;
+        document.getElementById('seconds').innerText = seconds;
+    }
 
-        // สั่งให้ระบบอัปเดตเวลาทุกๆ 1 วินาที (1000 มิลลิวินาที)
-        setInterval(updateClock, 1000);
+    // สั่งให้ระบบอัปเดตเวลาทุกๆ 1 วินาที
+    setInterval(updateClock, 1000);
 
-        // เรียกทำงานทันทีที่เปิดหน้าเว็บ ไม่ต้องรอให้ครบ 1 วินาทีแรก
-        updateClock();
-    </script>
+    // เรียกทำงานทันทีที่เปิดหน้าเว็บ
+    updateClock();
+</script>
+
 </body>
 </html>
